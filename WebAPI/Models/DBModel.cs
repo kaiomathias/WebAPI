@@ -8,6 +8,9 @@ namespace WebAPI.Models
 {
     public class DBModel
     {
+       private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+
 
         public static void Insert(UsuarioModel usuario, string sql)
         {
@@ -15,7 +18,7 @@ namespace WebAPI.Models
             {
                 try
                 {
-                    Console.WriteLine("Opened!");
+                    logger.Info("Opened!");
                    
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
 
@@ -29,11 +32,11 @@ namespace WebAPI.Models
                     {
                         int i = cmd.ExecuteNonQuery();
                         if (i > 0)
-                            Console.WriteLine("Registro incluido com sucesso!");
+                            logger.Info("Registro incluido com sucesso!");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Erro: " + ex.ToString());
+                        logger.Error("Erro: " + ex.ToString());
                     }
                     finally
                     {
@@ -44,28 +47,61 @@ namespace WebAPI.Models
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Cannot open Connection");
-                    Console.WriteLine(e.ToString());
+                    logger.Error(e, "Cannot open Connection");
                 }
             }
         }
 
-        public void Update(string sql)
+        public static void Update(UsuarioModel usuario, string sql)
         {
 
         }
 
-        public void Delete(string sql)
+        public static void Delete(UsuarioModel usuario, string sql)
+        {
+            using (MySqlConnection conn = new MySqlConnection("Database=restwebapi;Port=3306;Data Source=127.0.0.1;User Id=root;Password=123"))
+            {
+                try
+                {
+                    
+
+                    MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+                    cmd.Parameters.AddWithValue("@ID", usuario.Codigo);
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    conn.Open();
+                    logger.Info("Opened!");
+
+                    try
+                    {
+                        int i = cmd.ExecuteNonQuery();
+                        if (i > 0)
+                            logger.Info("Deleted!");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Erro: " + ex.ToString());
+                    }
+                    finally
+                    {
+                        conn.Close();
+                    }
+
+
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "Cannot open Connection");
+                }
+            }
+        }
+
+        public static void SelectAll(UsuarioModel usuario, string sql)
         {
 
         }
 
-        public void SelectAll(string sql)
-        {
-
-        }
-
-        public void Select(string sql)
+        public static void Select(UsuarioModel usuario, string sql)
         {
 
         }

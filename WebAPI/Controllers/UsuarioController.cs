@@ -46,13 +46,13 @@ namespace WebAPI.Controllers
 
         [AcceptVerbs("DELETE")]
         [Route("usuario/{codigo}")]
-        public string ExcluirUsuario(int codigo)
+        public string ExcluirUsuario(UsuarioModel usuario, int codigo)
         {
-            UsuarioModel usuario = listUsuarios.Where(n => n.Codigo == codigo)
-                .Select(n => n)
-                .First();
 
-            listUsuarios.Remove(usuario);
+
+            string sql = "DELETE FROM usuarios WHERE ID=@ID";
+            DBModel.Delete(usuario, sql);
+
             return "Registro excluido com sucesso!";
         }
 
